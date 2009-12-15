@@ -72,4 +72,54 @@ kha" "bla\nkha"))
 (is (= (:Clojure inv) "Hickey"))
 
 
+(defstruct book :title :author)
+
+(def book1 (struct book "Cryptonomicon" "Neal Stephenson"))
+(is (= (:title book1) "Cryptonomicon"))
+
+(def book2 (struct-map book :copyright 2008 :title "Anathem"))
+(is (= (:copyright book2) 2008))
+(is (= (:title book2) "Anathem"))
+(is (nil? (:author book2)))
+
+
+
+;functions
+(is (true? (string? "bla")))
+(is (true? (keyword? :hello)))
+(is (true? (symbol? 'hello)))
+
+(defn greeting
+  "Returns a greeting of the form 'Hello, username."
+  [username]
+  (str "Hello, " username))
+(is (= (greeting "world") "Hello, world"))
+
+(defn greeting
+  "Returns a greeting of the form 'Hello, username.'
+  Defailt username is 'world'."
+  ([] (greeting "world"))
+  ([username] (str "Hello, " username)))
+(is (= (greeting) "Hello, world"))
+(is (= (greeting "Anton") "Hello, Anton"))
+
+(defn date [person-1 person-2 & chaperones]
+  (str person-1 " and " person-2 " went out with " (count chaperones) " chaperones"))
+(is (= (date "Me" "Myself" "I" "Hickey" "McCarty") "Me and Myself went out with 3 chaperones"))
+
+
+
+;anonymous functions
+(use '[clojure.contrib.str-utils :only (re-split)])
+
+(def b (filter (fn [w] (> (count w) 2)) (re-split #"\W+" "A fine day")))
+(is (= b ["fine" "day"]))
+
+(def b (filter #(> (count %) 2) (re-split #"\W+" "A fine day")))
+(is (= b ["fine" "day"]))
+
+(defn make-greeter [greeting-prefix]
+  (fn [username] (str greeting-prefix ", " username)))
+(def greeter (make-greeter "Heyo"))
+(is (= (greeter "Anton") "Heyo, Anton"))
 
