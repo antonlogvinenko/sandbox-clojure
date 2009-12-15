@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="clojure-1.0">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../../../../Downloads/jline-0_9_5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../../../IdeaProjects/testy/lib/clojure-contrib.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/clojure.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
