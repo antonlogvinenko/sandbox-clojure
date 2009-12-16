@@ -1,5 +1,4 @@
-(ns exploring-clojure
-  (:use clojure.contrib.test-is)) 
+(ns exploring-clojure (:use clojure.contrib.test-is))
 
 ;numeric types
 (is (= (+ 1 2) 3))
@@ -97,7 +96,7 @@ kha" "bla\nkha"))
 
 (defn greeting
   "Returns a greeting of the form 'Hello, username.'
-  Defailt username is 'world'."
+  Default username is 'world'."
   ([] (greeting "world"))
   ([username] (str "Hello, " username)))
 (is (= (greeting) "Hello, world"))
@@ -120,6 +119,55 @@ kha" "bla\nkha"))
 
 (defn make-greeter [greeting-prefix]
   (fn [username] (str greeting-prefix ", " username)))
-(def greeter (make-greeter "Heyo"))
-(is (= (greeter "Anton") "Heyo, Anton"))
+(def heyo-greeter (make-greeter "Heyo"))
+(is (= (heyo-greeter "Anton") "Heyo, Anton"))
 
+(defn make-greeter [prefix] #(str prefix ", " %))
+(def hi-greeter (make-greeter "Hi"))
+(is (= (hi-greeter "Anton") "Hi, Anton"))
+
+(is (= ((make-greeter "Welcome") "Anton") "Welcome, Anton"))
+
+
+
+;vars
+(def foo 42)
+(is (= foo 42))
+(is (= (var foo) #'exploring-clojure/foo))
+(is (= #'foo #'exploring-clojure/foo))
+
+
+
+;bindings
+(defn square-corners [bottom left size]
+  (let [top (+ bottom size) right (+ left size)]
+    [[bottom left] [top left] [top right] [bottom right]]))
+(is (= (square-corners 1 1 4) [[1 1] [5 1] [5 5] [1 5]]))
+
+(is (= (let [[x y] [1 2 3]] [x y]) [1 2]))
+
+(is (= (let [[_ _ z] [1 2 3]] z) 3))
+
+(is (= (let [[_ _ z] [1 2 3]] _) 2))
+
+(is (= (let [[x y :as coords] [1 2 3 4 5 6]] coords) [1 2 3 4 5 6]))
+
+(defn greet-author [{author :first-name}]
+  (str "Hello, " author))
+(is (= (greet-author {:first-name "Neal" :second-name "Stephenson"}) "Hello, Neal"))
+
+
+
+;namespaces
+(is (= (def foo 10) #'exploring-clojure/foo))
+(is (= (resolve 'foo) #'exploring-clojure/foo))
+
+(ns exploring-clojure-somewhere-else (:use clojure.contrib.test-is))
+(def foo 42)                
+(is (= (resolve 'foo) #'exploring-clojure-somewhere-else/foo))
+(in-ns 'exploring-clojure)
+;a little bit more stupid namespaces stuff will be here soon
+
+
+
+;flow control
