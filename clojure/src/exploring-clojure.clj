@@ -145,9 +145,7 @@ kha" "bla\nkha"))
 (is (= (square-corners 1 1 4) [[1 1] [5 1] [5 5] [1 5]]))
 
 (is (= (let [[x y] [1 2 3]] [x y]) [1 2]))
-
 (is (= (let [[_ _ z] [1 2 3]] z) 3))
-
 (is (= (let [[_ _ z] [1 2 3]] _) 2))
 
 (is (= (let [[x y :as coords] [1 2 3 4 5 6]] coords) [1 2 3 4 5 6]))
@@ -171,3 +169,56 @@ kha" "bla\nkha"))
 
 
 ;flow control
+(defn is-small? [number]
+  (if (< number 100) "yes"))
+(is (= (is-small? 30) "yes"))
+(is (nil? (is-small? 100)))
+
+(defn is-small? [number]
+  (if (< number 100) "yes" "no"))
+(is (= (is-small? 30) "yes"))
+(is (= (is-small? 100) "no"))
+
+
+(defn is-small? [number]
+  (if (< number 100)
+  "yes"
+  (do
+    ()
+    "no")))
+
+(defn fill [x]
+  (loop [result [] x x]
+  (if (zero? x)
+    result
+    (recur (conj result x) (dec x)))))
+(is (= (fill 5) [5 4 3 2 1]))
+
+(defn countdown [result x]
+  (if (zero? x)
+    result
+    (recur (conj result x) (dec x))))
+(is (= (countdown [] 5) [5 4 3 2 1]))
+(is (= (countdown [6] 5) [6 5 4 3 2 1]))
+
+
+;for loop
+(defn indexed [coll] (map vector (iterate inc 0) coll))
+(is (= (indexed "abcde") [[0 \a] [1 \b] [2 \c] [3 \d] [4 \e]]))
+
+(defn index-filter [pred coll]
+  (when pred
+    (for [[idx elt] (indexed coll) :when (pred elt)] idx)))
+(is (= (index-filter #{\a \c} "abcde") [0 2]))
+
+(defn index-of-any [pred coll]
+  (first (index-filter pred coll)))
+
+(is (= (index-of-any #{\z \a} "zzabyycdxx") 0))
+
+(is ( = (nth (index-filter #{:h} [:t :t :h :t :h :t :t :t :h :h]) 2) 8))
+
+;metadata
+
+
+
