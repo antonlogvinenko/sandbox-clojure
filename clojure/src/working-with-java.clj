@@ -28,7 +28,6 @@
 (is (= (. Math PI) 3.141592653589793))
 
 
-
 ;accessing objects shortened
 (def string (new String "abcdef"))
 (is (= (.indexOf string "c") 2))
@@ -87,13 +86,52 @@
 (def a (seq (amap strings idx _ (.toUpperCase (aget strings idx)))))
 (is (= a ["SOME" "BLONDE" "STRINGS" "HERE"]))
 (def b (areduce strings idx ret 0 (max ret (.length (aget strings idx)))))
-(println b)
+(is (= b 7))
+
+;convenience functions
+(is (= (map (memfn toUpperCase) ["a" "short" "message"]) ["A" "SHORT" "MESSAGE"]))
+(is (true? (instance? Integer 10)))
+(is (true? (instance? Comparable 10)))
+(is (false? (instance? String 10)))
+
+(is (= (format "%s ran %d miles today" "Stu" 8) "Stu ran 8 miles today"))
+
+(import '(java.security MessageDigest))
+(is (= ((bean (MessageDigest/getInstance "SHA")) :algorithm) "SHA"))
 
 
-;memfn
-;instance?
-;format
-;bean
+;optimizing for performance
+(defn integer-sum-to [n]
+  (let [n (int n)]
+    (loop [i (int 1) sum (int 0)]
+      (if (<= i n)
+        (recur (inc i) (unchecked-add i sum))
+        sum))))
+(is (= (integer-sum-to 10) 55))
+
+(defn better-sum-to [n]
+  (reduce + (range 1 (inc n))))
+(is (= (better-sum-to 10) 55))
+
+(defn best-sum-to [n]
+  (/ (* n (inc n)) 2))
+(is (= (best-sum-to 10) 55))
+
+(dotimes [_ 3] (time (best-sum-to 100)))
+
+(defn describe-class [#^Class c]
+  {:name (.getName c)
+   :final (java.lang.reflect.Modifier/isFinal (.getModifiers c))})
+
+;(set! *warn-on-reflection* to warn about impossible
+;will complaing if cast will be required and unpossible
+(is (= ((describe-class StringBuffer) :name) "java.lang.StringBuffer"))
+;will not complain here:
+(defn wants-a-string [#^Stirng s] s)
+(is (= (wants-a-string 3) 3))
 
 
 
+;creating and compiling java classes in clojure
+
+;exception handling
