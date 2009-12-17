@@ -1,7 +1,7 @@
 Clojure sources presented in this project pursue several goals:
 1. Playing with basic Clojure features (learning purpose)
 2. Collecting and grouping Clojure features I encounter in various sources (project may be used as a reference)
-3. Those who are new to Clojure may use the project to overview language principles
+3. Those who are new to Clojure may use the project to overview the language
    or find out details on specific topics.
 
 All features are documented as simple Clojure tests.

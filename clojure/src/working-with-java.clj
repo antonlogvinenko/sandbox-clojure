@@ -132,8 +132,6 @@
 
 
 
-;creating and compiling java classes in clojure
-
 ;exception handling
 (use '[clojure.contrib.duck-streams])
 (import '(java.io PrintWriter))
@@ -158,4 +156,3 @@
 (def z (
   proxy [Callable] []
   (call [] "sas")))
-
