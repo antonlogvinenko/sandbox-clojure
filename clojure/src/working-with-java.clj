@@ -1,7 +1,6 @@
 (ns working-with-clojure (:use clojure.contrib.test-is))
 
 
-
 ;new
 (is (= (new String) ""))
 (def string (new String))
@@ -15,7 +14,7 @@
 (is (= string "abc"))
 
 
-;accesing objects and classes
+;accessing objects and classes
 (def string (new String "abcdef"))
 (is (= (. string indexOf "c") 2))
 (is (= (. string (indexOf "c") 2)))
@@ -40,7 +39,16 @@
 (is (= (Math/PI) 3.141592653589793))
 (is (= (Math/log 1) 0))
 
+(def location (.getLocation (.getCodeSource (.getProtectionDomain (.getClass '(1 2))))))
+(is (= (.getHost location) ""))
+(def locationHost (.. '(1 2) getClass getProtectionDomain getCodeSource getLocation getHost))
+(is (= locationHost ""))
 
+(doto (System/getProperties)
+  (.setProperty "name" "Stuart")
+  (.setProperty "favoriteColor" "blue"))
+(is (= (System/getProperty "name") "Stuart"))
+(is (= (System/getProperty "favoriteColor") "blue"))
 
 ;imports
 (import
@@ -48,3 +56,21 @@
   '(java.text MessageFormat))
 (is not (nil? Locale))
 (is not (nil? MessageFormat))
+
+;arrays
+;(make-array)
+;seq ()
+;aset
+;aget
+;alength
+;to-array
+;into-array
+;amap
+;areduce
+;memfn
+;instance?
+;format
+;bean
+
+
+

@@ -1,7 +1,6 @@
 (ns exploring-clojure (:use clojure.contrib.test-is))
 
 
-
 ;numeric types
 (is (= (+ 1 2) 3))
 (is (= (+ 1 2 3) 6))
