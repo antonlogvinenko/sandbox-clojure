@@ -1,9 +1,10 @@
 (ns exploring-clojure (:use clojure.contrib.test-is))
 
+
+
 ;numeric types
 (is (= (+ 1 2) 3))
 (is (= (+ 1 2 3) 6))
-(is (= (concat [1 2] [3 4]) [1 2 3 4]))
 (is (zero? (+)))
 
 (is (= (class (/ 22 7)) clojure.lang.Ratio))
@@ -44,14 +45,15 @@ kha" "bla\nkha"))
 (is (false? (true? ())))
 (is (false? (false? ())))
 
-(is (false? (true? nil)))
-(is (false? (false? nil)))
+(is not (true? nil))
+(is not (false? nil))
 
 (is (= (if () "first" "second") "first"))
 (is (= (if nil "first" "second") "second"))
 
 (is (true? (nil? nil)))
 (is (true? (zero? 0)))
+
 
 
 ;maps, keywords, structs
@@ -70,12 +72,9 @@ kha" "bla\nkha"))
 (is (= (inv :Clojure) "Hickey"))
 (is (= (:Clojure inv) "Hickey"))
 
-
 (defstruct book :title :author)
-
 (def book1 (struct book "Cryptonomicon" "Neal Stephenson"))
 (is (= (:title book1) "Cryptonomicon"))
-
 (def book2 (struct-map book :copyright 2008 :title "Anathem"))
 (is (= (:copyright book2) 2008))
 (is (= (:title book2) "Anathem"))
@@ -163,8 +162,32 @@ kha" "bla\nkha"))
 (ns exploring-clojure-somewhere-else (:use clojure.contrib.test-is))
 (def foo 42)                
 (is (= (resolve 'foo) #'exploring-clojure-somewhere-else/foo))
+(is (= foo 42))
 (in-ns 'exploring-clojure)
 ;a little bit more stupid namespaces stuff will be here soon
+(is (= foo 10))
+(is (= String java.lang.String))
+(is (= (clojure.core/use 'clojure.core) nil))
+
+(is (= java.io.File/separator "/"))
+(import '(java.io InputStream File))
+(is (= File/separator "/"))
+
+(require 'clojure.contrib.math)
+(is (= (clojure.contrib.math/round 1.7) 2))
+
+(use 'clojure.contrib.math)
+(is (= (round 1.7) 2))
+(use '[clojure.contrib.math :only (round)])
+(is (= (round 1.2) 1))
+(use :reload '[clojure.contrib.math :only (round)])
+(is (= (round 1.2) 1))
+(use :reload-all '[clojure.contrib.math :only (round)])
+
+(ns exploring-clojure2
+  (:use clojure.contrib.test-is clojure.contrib.str-utils)
+  (:import (java.io File)))
+(is (= File/separator "/"))
 
 
 
@@ -216,9 +239,43 @@ kha" "bla\nkha"))
 
 (is (= (index-of-any #{\z \a} "zzabyycdxx") 0))
 
-(is ( = (nth (index-filter #{:h} [:t :t :h :t :h :t :t :t :h :h]) 2) 8))
+(is (= (nth (index-filter #{:h} [:t :t :h :t :h :t :t :t :h :h]) 2) 8))
 
-;metadata
+;object's metadata
+(def anton {:name "anton" :email "anton@gmail.com"})
+(def serializable-anton (with-meta anton {:serializable true}))
+
+(is (= anton serializable-anton))
+(is not (identical? anton serializable-anton))
+
+(is (nil? (meta anton)))
+(is not (nil? (meta serializable-anton)))
+(is (= (meta serializable-anton) {:serializable true}))
+
+(is (nil? ^anton))
+(is not (nil? serializable-anton))
+(is (= ^serializable-anton {:serializable true}))
+
+(def anton-with-address (assoc serializable-anton :state "NC"))
+(is (= anton-with-address {:name "anton" :email "anton@gmail.com" :state "NC"}))
+(is (= ^anton-with-address ^serializable-anton))
+(is not (= serializable-anton anton-with-address))
 
 
 
+;var's metadata
+(is (= ((meta #'str) :name) 'str))
+
+(defn #^{:tag String} shout [#^{:tag String} s] (.toUpperCase s))
+;???(is (= (#'shout :tag) String))
+
+;???(is thrown (shout 1))
+(def #^{:testdata true} foo (with-meta [1 2 3] {:order :ascending}))
+(is (true? ((meta #'foo) :testdata)))
+(is (= (meta foo) {:order :ascending}))
+
+;???binding arguments and in let
+;??? namespaces
+;??? meta
+;??? complete 'for feature list
+;???' #' #^ and others
