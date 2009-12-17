@@ -1,0 +1,1 @@
+(ns exploring-clojure (:use clojure.contrib.test-is))
