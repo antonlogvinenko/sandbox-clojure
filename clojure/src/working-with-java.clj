@@ -58,15 +58,38 @@
 (is not (nil? MessageFormat))
 
 ;arrays
-;(make-array)
-;seq ()
-;aset
-;aget
-;alength
-;to-array
-;into-array
-;amap
-;areduce
+(def arr1 (make-array String 3))
+(def arr2 (make-array String 4 5))
+
+(is (= (.getName(class arr1)) "[Ljava.lang.String;"))
+(is (= (.getName(class arr2)) "[[Ljava.lang.String;"))
+(is (= (alength arr1) 3))
+(is (= (alength arr2)) 4)
+(is (= (alength (get arr2 0)) 5))
+
+(is (= (seq (make-array String 3)) [nil nil nil]))
+
+(defn painstakingly-create-array []
+  (let [arr (make-array String 5)]
+    (aset arr 0 "painstaking")
+    (aset arr 1 "to")
+    (aset arr 2 "fill")
+    (aset arr 3 "in")
+    (aset arr 4 "arrays")
+    arr))
+(is (= (aget (painstakingly-create-array) 0) "painstaking"))
+
+(is (= (.getName (class (to-array ["Easier" "array" "creation"]))) "[Ljava.lang.Object;"))
+(is (= (.getName (class (into-array Number [1 2 3]))) "[Ljava.lang.Number;"))
+(is (= (.getName (class (into-array [1 2 3]))) "[Ljava.lang.Integer;"))
+
+(def strings (into-array ["some" "blonde" "strings" "here"]))
+(def a (seq (amap strings idx _ (.toUpperCase (aget strings idx)))))
+(is (= a ["SOME" "BLONDE" "STRINGS" "HERE"]))
+(def b (areduce strings idx ret 0 (max ret (.length (aget strings idx)))))
+(println b)
+
+
 ;memfn
 ;instance?
 ;format
