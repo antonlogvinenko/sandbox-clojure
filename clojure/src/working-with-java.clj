@@ -135,3 +135,27 @@
 ;creating and compiling java classes in clojure
 
 ;exception handling
+(use '[clojure.contrib.duck-streams])
+(import '(java.io PrintWriter))
+
+(spit "hello.out" "hello, world")
+(defn spit2 [f content]
+  (with-open [#^PrintWriter w (writer f)]
+    (.print w content)))
+
+(is (=
+  (try (throw (Exception. "something failed")) (catch Exception _"something happened") (finally "we get to clean up"))
+  "something happened"))
+
+(defn class-available? [class-name]
+  (try
+    (Class/forName class-name) true
+    (catch ClassNotFoundException _ false)))
+
+(is (true? (class-available? "java.lang.String")))
+(is (false? (class-available? "borg.util.Assimilate")))
+
+(def z (
+  proxy [Callable] []
+  (call [] "sas")))
+
