@@ -5,6 +5,7 @@
 (is (= (new String) ""))
 (def string (new String))
 (is (= string ""))
+(is (= string ""))
 
 
 ;new shortened
