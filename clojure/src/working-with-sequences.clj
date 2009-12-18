@@ -89,4 +89,46 @@
 
 
 ;filtering sequences
+(is (= (filter even? [1 2 3 4 5 6]) [2 4 6]))
+
+(is (= (take-while #(> 5 %) [1 3 5 7 9]) '(1 3)))
+(is (= (take-while (complement #{\a\e\i\o\u}) "the-quick-brown-fox") '(\t \h)))
+
+(is (= (drop-while #(> 5 %) [1 3 5 7 9 1]) '(5 7 9 1)))
+
+(is (= (split-at 5 (range 10)) '((0 1 2 3 4) (5 6 7 8 9))))
+
+(is (= (split-with #(<= % 10) (range 0 20 2)) '((0 2 4 6 8 10) (12 14 16 18))))
+
+
+;sequence predicates
+(is (true? (every? odd? [1 3 5])))
+(is (false? (every? odd? [1 3 6])))
+
+(is (true? (some odd? [1 2 4])))
+(is (nil? (some odd? [2 4 6])))
+
+(is (= (some identity [nil false 1 nil 2]) 1))
+
+(is (false? (not-every? odd? [1 3 5])))
+(is (true? (not-every? odd? [1 2 3])))
+
+;not any is odd? (no odd elements?)
+(is (true? (not-any? odd? [2 4 6])))
+(is (false? (not-any? odd? [1 3 5])))
+(is (false? (not-any? odd? [1 2 3 4])))
+
+;transforming sequences
+(is (= (map #(* 2 %) [1 2 3 4]) [2 4 6 8]))
+(is (= (map #(* %1 %2) [1 2 3 4] [5 6 7 8]) [5 12 21 32]))
+
+(is (= (reduce + (range 1 11)) 55))
+
+(is (= (sort #(> %1 %2) [1 2 3]) [3 2 1]))
+(is (= (sort > [1 2 3]) [3 2 1]))
+(is (= (sort [3 2 1]) [1 2 3]))
+
+(is (= (sort-by #(.toString %) [42 1 7 11]) '(1 11 42 7)))
+(is (= (sort-by :grade > [{:grade 83 {:grade 90} {:grade 77}}])))
+
 
