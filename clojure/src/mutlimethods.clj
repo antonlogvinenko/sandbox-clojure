@@ -28,3 +28,27 @@
 (prefer-method my-decorate Integer Number)
 (is (= (my-decorate 42) "42 is an Integer"))
 
+
+
+(defstruct account :id :tag :balance)
+(alias 'acc 'working-with-sequences)
+(def test-savings (struct account 1 ::acc/Savings 100M))
+(def test-checking (struct account 2 ::acc/Checking 250M))
+(defmulti interest-rate :tag)
+(defmethod interest-rate ::acc/Checking [_] 0M)
+(defmethod interest-rate ::acc/Savings [_] 0.05M)
+(is (= (interest-rate test-savings) 0.05M))
+(is (= (interest-rate test-checking) 0M))
+
+(derive ::acc/Savings ::acc/Account)
+(derive ::acc/Checking ::acc/Account)
+(is (true? (isa? ::acc/Savings ::acc/Account)))
+(is (true? (isa? ::acc/Checking ::acc/Account)))
+(defmulti info :tag)
+(defmethod info ::acc/Account [_] "some account")
+(defmethod info ::acc/Savings [_] "savings")
+(is (= (info test-savings) "savings"))
+(is (= (info test-checking) "some account"))
+
+
+
