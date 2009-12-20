@@ -69,3 +69,15 @@
 
 
 ;trampoline
+(defn trampoline-fibo [n]
+  (let [fib (fn fib [f-2 f-1 current]
+    (let [f (+ f-2 f-1)]
+      (if (= n current)
+        f
+        #(fib f-1 f (inc current)))))]
+    (cond
+      (= n 0) 0
+      (= n 1) 1
+      :else (fib 0 1 2))))
+;no exception here too
+;(is (= (rem (trampoline trampoline-fibo 10000) 10)))
